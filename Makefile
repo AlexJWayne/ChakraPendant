@@ -17,7 +17,7 @@ MAIN = Pendant.c
 LOCAL_SOURCE = light_ws2812.c
 
 ## Here you can link to one more directory (and multiple .c files)
-EXTRA_SOURCE_DIR = ../AVR-Programming-Library/
+EXTRA_SOURCE_DIR = ../AVR-Programming-Library/ # FastLED/
 EXTRA_SOURCE_FILES =
 
 ##########------------------------------------------------------##########
