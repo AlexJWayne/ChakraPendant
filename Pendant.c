@@ -106,7 +106,7 @@ void chakra1(void) {
 
   uint8_t fadeAmount = chakra1_shadow;
   if (fadeAmount > 127) { fadeAmount = 255 - fadeAmount; }
-  fadeAmount *= 3/2;
+  fadeAmount *= 509/255;
 
   for (uint8_t i = 0; i < NUM_LEDS; i++) {
     setHue(i,
