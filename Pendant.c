@@ -55,7 +55,7 @@ void setHue(uint8_t i, uint8_t hue, uint8_t brightness) {
 }
 
 int pressed(void) {
-  return bit_is_clear(PINB, PB0);
+  return bit_is_clear(PINB, PB1);
 }
 
 int prevPressed = 0;
@@ -156,6 +156,11 @@ int main(void) {
 
   // ------ Event loop ------ //
   while (1) {
+    // PORTB = 0xFF;
+    // _delay_ms(1000);
+    // PORTB = 0x00;
+    // _delay_ms(1000);
+
     setMode();
 
     switch(mode) {
