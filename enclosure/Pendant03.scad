@@ -4,7 +4,7 @@ pixelHeight = 2.8;
 battWidth  = 25.5;
 battLength = 19.5;
 battHeight = 4;
-battClearance = 0.6;
+battClearance = 0.3;
 
 battPcbGap = 4;
 
@@ -19,16 +19,27 @@ switchWidth  = 6;
 switchLength = 10;
 switchHeight = 3;
 
-bodyWidth  = 34;
-bodyHeight = 19;
+bodyWidth  = 35;
+bodyHeight = 18;
 bodyWall   = 1.6;
-bodyBezel  = 3.5;
+bodyBezel  = 6.5;
 
 /////// Assembly
 
-PendantComponents();
+/*PendantComponents();*/
 
-Body();
+union() {
+  Body();
+
+  // hook tabs
+  translate([0, pcbWidth/2, usbHeight-0.5])
+    scale([2, 1, 1])
+      tab();
+
+  translate([-battWidth/2, 0, usbHeight-0.5])
+    scale([1, 2, 1])
+      tab();
+}
 
 
 
@@ -42,22 +53,39 @@ module Body() {
     // main body
     cylinder(r=bodyWidth/2, h=bodyHeight, center=false, $fn=360);
 
-    // hollow out
+    // pixel pcb hollow
     translate([0, 0, -bodyWall])
-      cylinder(r=bodyWidth/2 - bodyWall, h=bodyHeight, center=false, $fn=360);
+      cylinder(r=pixelWidth/2 + .5, h=bodyHeight, center=false, $fn=360);
 
     // Cut out diffuser
     translate([0, 0, bodyHeight - bodyWall*2])
       cylinder(r=bodyWidth/2 - bodyBezel, h=bodyWall*6, center=true, $fn=360);
 
     // battery corners
-    translate([0, 0, -bodyWall])
+    translate([0, 0, -(bodyWall + pixelHeight)])
       hcCube(
         battWidth  + battClearance*2,
         battLength + battClearance*2,
         bodyHeight
       );
+
+    // main PCB
+    translate([0, 0, -1])
+      cylinder(r=pcbWidth/2, h=(usbHeight + pcbHeight + 1), center=false, $fn=360);
+
+    // USB cutout
+    translate([0, -(pcbWidth - usbLength)/2 - 5, 0])
+      hcCube(usbWidth + 1, usbLength  + 1, usbHeight + 1);
+
+    // Power Switch cutout
+    translate([pcbWidth/2-switchWidth/2 + 5, 0, 0])
+      hcCube(switchWidth + 1, switchLength + 1, switchHeight + 1);
+
   }
+}
+
+module tab() {
+  cylinder(r1=.6, r2=0, h=1, $fn=180);
 }
 
 module PendantComponents() {
