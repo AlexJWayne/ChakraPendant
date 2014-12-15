@@ -24,6 +24,7 @@ void setup() {
   FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
 
   pinMode(BUTTON_PIN, INPUT);
+  digitalWrite(BUTTON_PIN, HIGH); // internal pull up resitor for button
 }
 
 void loop() {
