@@ -5,11 +5,11 @@
 #define BRIGHTNESS 64
 #define LED_ANGLE 255 / 6
 #define START_MODE 0
-#define MODES 3
+#define MODES 4
 
 #define HUE_RED      0
 #define HUE_ORANGE  30
-#define HUE_YELLOW  64
+#define HUE_YELLOW  55
 #define HUE_GREEN   96
 #define HUE_BLUE   160
 #define HUE_INDIGO 190
@@ -37,6 +37,7 @@ void loop() {
     case 0: rainbow(); break;
     case 1: chakra1(); break;
     case 2: chakra2(); break;
+    case 3: chakra3(); break;
   }
 
   FastLED.show();
@@ -107,4 +108,22 @@ void chakra2() {
     leds[i] = CHSV(HUE_ORANGE, 0xFF, outer);
     FastLED.show();
   }
+}
+
+#define CHAKRA3_FADE 12
+#define CHAKRA3_THRESHOLD 4500
+void chakra3() {
+  if (random16() < CHAKRA3_THRESHOLD) {
+    leds[random8(8)] = CHSV(
+      HUE_YELLOW + random8(20) - 5,
+      random8(215, 255),
+      255
+    );
+  }
+
+  for (uint8_t i = 0; i < NUM_LEDS; i++) {
+    leds[i].fadeLightBy(i == 0 ? CHAKRA3_FADE/4 : CHAKRA3_FADE);
+    FastLED.show();
+  }
+  FastLED.delay(30);
 }

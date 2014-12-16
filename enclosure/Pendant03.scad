@@ -36,7 +36,7 @@ union() {
     scale([2, 1, 1])
       tab();
 
-  translate([-battWidth/2, 0, usbHeight-0.5])
+  translate([-battWidth/2 - 0.25, 0, usbHeight-0.5])
     scale([1, 2, 1])
       tab();
 }
@@ -62,7 +62,7 @@ module Body() {
       cylinder(r=bodyWidth/2 - bodyBezel, h=bodyWall*6, center=true, $fn=360);
 
     // battery corners
-    translate([0, 0, -(bodyWall + pixelHeight)])
+    translate([0, 0, -(bodyWall + pixelHeight + 2)])
       hcCube(
         battWidth  + battClearance*2,
         battLength + battClearance*2,
@@ -75,11 +75,15 @@ module Body() {
 
     // USB cutout
     translate([0, -(pcbWidth - usbLength)/2 - 5, 0])
-      hcCube(usbWidth + 1, usbLength  + 1, usbHeight + 1);
+      hcCube(usbWidth + 3, usbLength + 4, usbHeight + 3);
 
     // Power Switch cutout
     translate([pcbWidth/2-switchWidth/2 + 5, 0, 0])
-      hcCube(switchWidth + 1, switchLength + 1, switchHeight + 1);
+      hcCube(switchWidth + 4, switchLength + 3, switchHeight + 3);
+
+    // chain channel
+    translate([0, 14, 5])
+      hcCube(50, 2, 2);
 
   }
 }
