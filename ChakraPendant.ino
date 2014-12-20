@@ -4,15 +4,15 @@
 #define BUTTON_PIN 1
 #define BRIGHTNESS 64
 #define LED_ANGLE 255 / 6
-#define START_MODE 5
-#define MODES 6
+#define START_MODE 6
+#define MODES 8
 
 #define HUE_RED      0
 #define HUE_ORANGE  30
-#define HUE_YELLOW  53
+#define HUE_YELLOW  50
 #define HUE_GREEN   96
 #define HUE_BLUE   160
-#define HUE_INDIGO 190
+#define HUE_INDIGO 185
 #define HUE_VIOLET 205
 
 CRGB leds[NUM_LEDS];
@@ -23,8 +23,7 @@ void setup() {
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
 
-  pinMode(BUTTON_PIN, INPUT);
-  digitalWrite(BUTTON_PIN, HIGH); // internal pull up resitor for button
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
 }
 
 void loop() {
@@ -40,6 +39,10 @@ void loop() {
     case 3: chakra3(); break;
     case 4: chakra4(); break;
     case 5: chakra5(); break;
+    case 6: chakra6(); break;
+    case 7: chakra7(); break;
+    default:
+      mode = 0;
   }
 
   FastLED.show();
@@ -161,15 +164,55 @@ void chakra4() {
 }
 
 #define CHAKRA5_SPEED 100
-#define CHAKRA5_SHIMMER 20
+#define CHAKRA5_SHIMMER 15
+#define CHAKRA5_MIN 92
+
 uint16_t chakra5_phase = 0;
 void chakra5() {
-  chakra5_phase += CHAKRA5_SPEED;
+  chakra5_phase -= CHAKRA5_SPEED;
   for (uint8_t i = 0; i < NUM_LEDS; i++) {
     uint8_t brightness = scale8(quadwave8((LED_ANGLE * i) + (chakra5_phase >> 2)), CHAKRA5_SHIMMER);
-    brightness        += scale8(quadwave8((LED_ANGLE * i) + (chakra5_phase >> 8)), 255-CHAKRA5_SHIMMER);
 
-    leds[i] = CHSV(HUE_BLUE, 0xFF, brightness);
+    if (i > 0) {
+      brightness += scale8(
+        quadwave8(
+          (LED_ANGLE * i) +
+          (chakra5_phase >> 7)
+        ),
+        255 - CHAKRA5_SHIMMER - CHAKRA5_MIN
+      ) + CHAKRA5_MIN;
+    } else {
+      brightness += 255 - CHAKRA5_SHIMMER;
+    }
+
+    leds[i] = CHSV(HUE_BLUE, i == 0 ? 128 : 255, brightness);
+    FastLED.show();
+  }
+}
+
+#define CHAKRA6_SPEED 90
+uint16_t chakra6_phase = 0;
+void chakra6() {
+  chakra6_phase += CHAKRA6_SPEED;
+
+  leds[0] = CHSV(HUE_INDIGO, 64, scale8(quadwave8(chakra6_phase >> 8), 255-92) + 92);
+  FastLED.show();
+
+  for (uint8_t i = 1; i < NUM_LEDS; i++) {
+    uint8_t brightness = scale8(
+      quadwave8((2 * LED_ANGLE * i) + (chakra6_phase >> 7))
+    , 255-92) + 92;
+    leds[i] = CHSV(HUE_INDIGO, 0xFF, brightness);
+    FastLED.show();
+  }
+}
+
+#define CHAKRA7_SPEED 50
+uint16_t chakra7_phase = 0;
+void chakra7() {
+  chakra7_phase += CHAKRA7_SPEED;
+  for (uint8_t i = 0; i < NUM_LEDS; i++) {
+    leds[i] = CHSV(HUE_VIOLET, 0xFF, 0xFF);
     FastLED.show();
   }
 }
