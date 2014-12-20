@@ -4,12 +4,12 @@
 #define BUTTON_PIN 1
 #define BRIGHTNESS 64
 #define LED_ANGLE 255 / 6
-#define START_MODE 0
-#define MODES 4
+#define START_MODE 5
+#define MODES 6
 
 #define HUE_RED      0
 #define HUE_ORANGE  30
-#define HUE_YELLOW  55
+#define HUE_YELLOW  53
 #define HUE_GREEN   96
 #define HUE_BLUE   160
 #define HUE_INDIGO 190
@@ -38,6 +38,8 @@ void loop() {
     case 1: chakra1(); break;
     case 2: chakra2(); break;
     case 3: chakra3(); break;
+    case 4: chakra4(); break;
+    case 5: chakra5(); break;
   }
 
   FastLED.show();
@@ -79,7 +81,7 @@ void rainbow(void) {
   }
 }
 
-#define CHAKRA1_SPEED 25
+#define CHAKRA1_SPEED 40
 uint16_t chakra1_brightness = 0;
 void chakra1() {
   chakra1_brightness += CHAKRA1_SPEED;
@@ -92,7 +94,7 @@ void chakra1() {
   leds[0].r = dim8_raw(leds[0].r);
 }
 
-#define CHAKRA2_SPEED 25
+#define CHAKRA2_SPEED 40
 uint16_t chakra2_brightness = 0;
 void chakra2() {
   chakra2_brightness += CHAKRA2_SPEED;
@@ -111,7 +113,7 @@ void chakra2() {
 }
 
 #define CHAKRA3_FADE 12
-#define CHAKRA3_THRESHOLD 4500
+#define CHAKRA3_THRESHOLD 15000
 void chakra3() {
   if (random16() < CHAKRA3_THRESHOLD) {
     leds[random8(8)] = CHSV(
@@ -126,4 +128,48 @@ void chakra3() {
     FastLED.show();
   }
   FastLED.delay(30);
+}
+
+#define CHAKRA4_SPEED 100
+#define CHAKRA4_DARKEST 75
+#define CHAKRA4_MID_BEAT 48
+#define CHAKRA4_END_BEAT 192
+uint16_t chakra4_phase = 0;
+void chakra4() {
+  chakra4_phase += CHAKRA4_SPEED;
+  for (uint8_t i = 0; i < NUM_LEDS; i++) {
+    uint8_t progress = chakra4_phase >> 8;
+    uint8_t brightness = 0;
+
+    // Heartbeat comes from the center beating first!
+    if (i == 0) progress += 40;
+
+    if (progress < CHAKRA4_MID_BEAT) {
+      progress = map(progress, 0, CHAKRA4_MID_BEAT, 0, 127);
+    } else if (progress < CHAKRA4_END_BEAT) {
+      progress = map(progress, CHAKRA4_MID_BEAT, CHAKRA4_END_BEAT, 128, 255);
+    } else {
+      progress = 255;
+    }
+
+    brightness = quadwave8(progress);
+    brightness = CHAKRA4_DARKEST + scale8(brightness, 255-CHAKRA4_DARKEST);
+
+    leds[i] = CHSV(HUE_GREEN, (i == 0 ? 0xBB : 0xFF), brightness);
+    FastLED.show();
+  }
+}
+
+#define CHAKRA5_SPEED 100
+#define CHAKRA5_SHIMMER 20
+uint16_t chakra5_phase = 0;
+void chakra5() {
+  chakra5_phase += CHAKRA5_SPEED;
+  for (uint8_t i = 0; i < NUM_LEDS; i++) {
+    uint8_t brightness = scale8(quadwave8((LED_ANGLE * i) + (chakra5_phase >> 2)), CHAKRA5_SHIMMER);
+    brightness        += scale8(quadwave8((LED_ANGLE * i) + (chakra5_phase >> 8)), 255-CHAKRA5_SHIMMER);
+
+    leds[i] = CHSV(HUE_BLUE, 0xFF, brightness);
+    FastLED.show();
+  }
 }
