@@ -29,16 +29,18 @@ bodyBezel  = 6.5;
 /*PendantComponents();*/
 
 union() {
-  Body();
+  rotate([180, 0, 0]) {
+    Body();
 
   // hook tabs
-  translate([0, pcbWidth/2, usbHeight-0.5])
+  translate([0, pcbWidth/2 + 0.25, usbHeight-0.5])
     scale([2, 1, 1])
       tab();
 
-  translate([-battWidth/2 - 0.25, 0, usbHeight-0.5])
+  translate([-battWidth/2 - 0.5, 0, usbHeight-0.5])
     scale([1, 2, 1])
       tab();
+  }
 }
 
 
@@ -49,42 +51,46 @@ union() {
 /////// Parts
 
 module Body() {
-  difference() {
-    // main body
-    cylinder(r=bodyWidth/2, h=bodyHeight, center=false, $fn=360);
+  intersection() {
+    difference() {
+      // main body
+      cylinder(r=bodyWidth/2, h=bodyHeight, center=false, $fn=360);
 
-    // pixel pcb hollow
-    translate([0, 0, -bodyWall])
+      // pixel pcb hollow
+      translate([0, 0, -bodyWall])
       cylinder(r=pixelWidth/2 + .5, h=bodyHeight, center=false, $fn=360);
 
-    // Cut out diffuser
-    translate([0, 0, bodyHeight - bodyWall*2])
+      // Cut out diffuser
+      translate([0, 0, bodyHeight - bodyWall*2])
       cylinder(r=bodyWidth/2 - bodyBezel, h=bodyWall*6, center=true, $fn=360);
 
-    // battery corners
-    translate([0, 0, -(bodyWall + pixelHeight + 2)])
+      // battery corners
+      translate([0, 0, -(bodyWall + pixelHeight + 2)])
       hcCube(
         battWidth  + battClearance*2,
         battLength + battClearance*2,
         bodyHeight
       );
 
-    // main PCB
-    translate([0, 0, -1])
+      // main PCB
+      translate([0, 0, -1])
       cylinder(r=pcbWidth/2, h=(usbHeight + pcbHeight + 1), center=false, $fn=360);
 
-    // USB cutout
-    translate([0, -(pcbWidth - usbLength)/2 - 5, 0])
+      // USB cutout
+      translate([0, -(pcbWidth - usbLength)/2 - 5, 0])
       hcCube(usbWidth + 3, usbLength + 4, usbHeight + 3);
 
-    // Power Switch cutout
-    translate([pcbWidth/2-switchWidth/2 + 5, 0, 0])
+      // Power Switch cutout
+      translate([pcbWidth/2-switchWidth/2 + 5, 0, 0])
       hcCube(switchWidth + 4, switchLength + 3, switchHeight + 3);
 
-    // chain channel
-    translate([0, 14, 5])
-      hcCube(50, 4, 2);
+      // chain channel
+      translate([0, 14, 5])
+      hcCube(50, 2, 4);
+    }
 
+    // Chamfer top edge
+    cylinder(r1=bodyWidth * 0.81, r2=0, h=bodyWidth * 1.2, center=false, $fn=360);
   }
 }
 

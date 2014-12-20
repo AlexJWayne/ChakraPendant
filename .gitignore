@@ -1,20 +1,11 @@
-*.hex
-*.elf
+# Gcode files are very specific individual printers
+*.gcode
 
 # Ignore list for Eagle PCB layout tool
-
-# Backup files
 *.s#?
 *.b#?
 *.l#?
-
-# Eagle project file
-# It contains a serial number and references to the file structure
-# on your computer.
-# comment the following line if you want to have your project file included.
 eagle.epf
-
-# CAM files
 *.$$$
 *.cmp
 *.ly2
@@ -25,15 +16,11 @@ eagle.epf
 *.sts
 *.crc
 *.crs
-
 *.dri
 *.drl
 *.gpi
 *.pls
-
 *.drd
 *.drd.*
-
 *.info
-
 *.eps
