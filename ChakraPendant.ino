@@ -4,7 +4,7 @@
 #define BUTTON_PIN 1
 #define BRIGHTNESS 64
 #define LED_ANGLE 255 / 6
-#define START_MODE 6
+#define START_MODE 7
 #define MODES 8
 
 #define HUE_RED      0
