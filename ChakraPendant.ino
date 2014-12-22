@@ -4,7 +4,7 @@
 #define BUTTON_PIN 1
 #define BRIGHTNESS 64
 #define LED_ANGLE 255 / 6
-#define START_MODE 7
+#define START_MODE 8
 #define MODES 8
 
 #define HUE_RED      0
@@ -91,7 +91,13 @@ void chakra1() {
   uint8_t bright = scale8(quadwave8(chakra1_brightness >> 8), 160) + 95;
 
   for (uint8_t i = 0; i < NUM_LEDS; i++) {
-    leds[i] = CHSV(HUE_RED, 0xFF, bright);
+    uint8_t swirlVal = swirl(true, 1, i, 30, 255);
+
+    leds[i] = CHSV(
+      HUE_RED,
+      255 - scale8(swirlVal, 48),
+      qadd8(bright, scale8(swirlVal, 92))
+    );
     FastLED.show();
   }
   leds[0].r = dim8_raw(leds[0].r);
@@ -110,20 +116,26 @@ void chakra2() {
   leds[0] = CHSV(HUE_ORANGE, 0xFF, inner) + CRGB(16, 16, 16);
 
   for (uint8_t i = 1; i < NUM_LEDS; i++) {
-    leds[i] = CHSV(HUE_ORANGE, 0xFF, outer);
+    leds[i] = CHSV(
+      HUE_ORANGE,
+      255,
+      qadd8(outer, swirl(false, 1, i, 30, 64))
+    );
     FastLED.show();
   }
 }
 
 #define CHAKRA3_FADE 12
-#define CHAKRA3_THRESHOLD 15000
+#define CHAKRA3_THRESHOLD 12000
 void chakra3() {
+
   if (random16() < CHAKRA3_THRESHOLD) {
     leds[random8(8)] = CHSV(
       HUE_YELLOW + random8(20) - 5,
       random8(215, 255),
       255
     );
+    FastLED.show();
   }
 
   for (uint8_t i = 0; i < NUM_LEDS; i++) {
@@ -157,6 +169,7 @@ void chakra4() {
 
     brightness = quadwave8(progress);
     brightness = CHAKRA4_DARKEST + scale8(brightness, 255-CHAKRA4_DARKEST);
+    if (i > 0) brightness -= swirl(false, 2, i, 20, 48);
 
     leds[i] = CHSV(HUE_GREEN, (i == 0 ? 0xBB : 0xFF), brightness);
     FastLED.show();
@@ -212,7 +225,26 @@ uint16_t chakra7_phase = 0;
 void chakra7() {
   chakra7_phase += CHAKRA7_SPEED;
   for (uint8_t i = 0; i < NUM_LEDS; i++) {
-    leds[i] = CHSV(HUE_VIOLET, 0xFF, 0xFF);
+    leds[i] = CHSV(
+      HUE_VIOLET,
+      i > 0 ? scale8(quadwave8(((chakra7_phase >> 8) + (LED_ANGLE * i)) * 3), 200) + 255-200 : 255,
+      i > 0 ? swirl(true, 1, i, 30, 128) + 127                                               : 255
+    );
     FastLED.show();
   }
+}
+
+
+//
+// lib
+//
+
+uint16_t swirlPhase = 0;
+uint8_t swirl(bool clockwise, uint8_t spokes, uint8_t idx, uint8_t speed, uint8_t scale) {
+  swirlPhase += clockwise ? -speed : speed;
+  return scale8(
+    quadwave8((
+      (LED_ANGLE * idx) + (swirlPhase >> 8)
+    ) * spokes)
+  , scale);
 }
