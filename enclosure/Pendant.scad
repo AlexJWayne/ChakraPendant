@@ -90,7 +90,7 @@ module Body() {
     }
 
     // Chamfer top edge
-    cylinder(r1=bodyWidth * 0.79, r2=0, h=bodyWidth * 1.1, center=false, $fn=360);
+    cylinder(r1=bodyWidth * 0.74, r2=0, h=bodyWidth * 1.4, center=false, $fn=360);
   }
 }
 
