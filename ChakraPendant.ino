@@ -1,8 +1,12 @@
+#include <avr/interrupt.h>
+#include <avr/sleep.h>
+#include <avr/power.h>
+
 #include "FastLED.h"
 #define NUM_LEDS 7
 #define LED_PIN 0
 #define BUTTON_PIN 1
-#define BRIGHTNESS 64
+#define BRIGHTNESS 32
 #define LED_ANGLE 255 / 6
 #define START_MODE 8
 #define MODES 8
@@ -19,7 +23,21 @@ CRGB leds[NUM_LEDS];
 
 uint8_t mode = START_MODE;
 
+bool sleepOnRelease = false;
+bool changeModeOnRelease = true;
+
+// button state variables
+bool buttonPrevPressed    = false;
+bool buttonPrevReleased   = true;
+uint32_t buttonPressedAt  = 0;
+/*uint32_t buttonReleasedAt = 0;*/
+
+
+
 void setup() {
+  ADCSRA = 0;             // turn off ADC
+  GIMSK  |= _BV(PCIE);    // enable pin change interrupts
+
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
 
@@ -27,46 +45,105 @@ void setup() {
 }
 
 void loop() {
-  if (buttonPushed()) {
-    mode++;
-    if (mode >= MODES) mode = 0;
+  if ((buttonPressedAt) && (millis() > (buttonPressedAt + 3000))) {
+    sleepOnRelease = true;
+  }
+  buttonPushed(); // update pushed button state
+
+
+  if (buttonReleased()) {
+    if (sleepOnRelease) {
+      sleepNow();
+    } else if (changeModeOnRelease) {
+      mode++;
+      if (mode >= MODES) mode = 0;
+    } else {
+      changeModeOnRelease = true;
+    }
   }
 
-  switch(mode) {
-    case 0: rainbow(); break;
-    case 1: chakra1(); break;
-    case 2: chakra2(); break;
-    case 3: chakra3(); break;
-    case 4: chakra4(); break;
-    case 5: chakra5(); break;
-    case 6: chakra6(); break;
-    case 7: chakra7(); break;
-    default:
-      mode = 0;
+  if (sleepOnRelease) {
+    FastLED.showColor(CRGB::Black);
+  } else {
+    // normal operation
+    switch(mode) {
+      case 0: rainbow(); break;
+      case 1: chakra1(); break;
+      case 2: chakra2(); break;
+      case 3: chakra3(); break;
+      case 4: chakra4(); break;
+      case 5: chakra5(); break;
+      case 6: chakra6(); break;
+      case 7: chakra7(); break;
+      default: mode = 0;
+    }
+    FastLED.show();
   }
 
-  FastLED.show();
 }
 
+void sleepNow() {
+  FastLED.showColor(CRGB::Black); // Turn off LEDs
+  /*digitalWrite(BUTTON_PIN, LOW);*/
+  delay(100);
+
+  PCMSK  |= _BV(PCINT1);  // Watch pin PB1
+  GIFR   |= _BV(PCIF);    // clear any outstanding interrupts
+
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+  power_all_disable();  // power off ADC, Timer 0 and 1, serial interface
+  sleep_enable();
+  sleep_cpu();
+
+  // wake
+  sleep_disable();
+  power_all_enable();    // power everything back on
+  PCMSK &= ~_BV(PCINT1); // Turn off PB1 as interrupt pin
+
+  sleepOnRelease = false;
+  changeModeOnRelease = false;
+  /*digitalWrite(BUTTON_PIN, HIGH);*/
+}
+
+ISR (PCINT0_vect) {}
 
 // -
 // - BUTTON
 // -
-bool buttonPrevPressed = false;
 
 // Was the button just pushed?
 bool buttonPushed() {
   bool pressed = digitalRead(BUTTON_PIN) == LOW;
 
   if (pressed && !buttonPrevPressed) {
+    buttonPressedAt = millis();
     buttonPrevPressed = true;
     return true;
   }
 
-  if (!pressed) buttonPrevPressed = false;
+  if (!pressed) {
+    buttonPressedAt = 0;
+    buttonPrevPressed = false;
+  }
   return false;
 }
 
+// Was the button jsut released?
+bool buttonReleased() {
+  bool released = digitalRead(BUTTON_PIN) == HIGH;
+
+  if (released && !buttonPrevReleased) {
+    /*buttonReleasedAt = millis();*/
+    buttonPrevReleased = true;
+    return true;
+  }
+
+  if (!released) {
+    /*buttonReleasedAt = 0;*/
+    buttonPrevReleased = false;
+  }
+  return false;
+}
 
 // -
 // - PROGRAMS
