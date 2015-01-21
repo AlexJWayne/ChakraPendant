@@ -4096,7 +4096,7 @@ Standard 8.5x11 US Letter frame</description>
 <instance part="C1" gate="G$1" x="15.24" y="127" rot="MR0"/>
 <instance part="C2" gate="G$1" x="83.82" y="132.08"/>
 <instance part="C3" gate="G$1" x="121.92" y="60.96"/>
-<instance part="Q1" gate="G$1" x="121.92" y="81.28" rot="MR180"/>
+<instance part="Q1" gate="G$1" x="121.92" y="81.28"/>
 <instance part="U$1" gate="J" x="50.8" y="38.1" rot="R180"/>
 <instance part="S2" gate="G$1" x="83.82" y="96.52"/>
 <instance part="C4" gate="G$1" x="15.24" y="78.74"/>
@@ -4250,13 +4250,13 @@ Standard 8.5x11 US Letter frame</description>
 </net>
 <net name="N$1" class="1">
 <segment>
-<pinref part="Q1" gate="G$1" pin="D"/>
 <pinref part="C3" gate="G$1" pin="1"/>
 <pinref part="LEDPWR" gate="G$1" pin="1"/>
-<wire x1="121.92" y1="66.04" x2="121.92" y2="76.2" width="0.1524" layer="91"/>
-<junction x="121.92" y="66.04"/>
 <wire x1="116.84" y1="63.5" x2="116.84" y2="66.04" width="0.1524" layer="91"/>
 <wire x1="116.84" y1="66.04" x2="121.92" y2="66.04" width="0.1524" layer="91"/>
+<pinref part="Q1" gate="G$1" pin="S"/>
+<wire x1="121.92" y1="76.2" x2="121.92" y2="66.04" width="0.1524" layer="91"/>
+<junction x="121.92" y="66.04"/>
 </segment>
 </net>
 <net name="USB5V" class="1">
@@ -4320,11 +4320,6 @@ Standard 8.5x11 US Letter frame</description>
 <wire x1="53.34" y1="33.02" x2="55.88" y2="33.02" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="Q1" gate="G$1" pin="S"/>
-<wire x1="121.92" y1="86.36" x2="121.92" y2="88.9" width="0.1524" layer="91"/>
-<pinref part="SUPPLY11" gate="P" pin="+4.1V"/>
-</segment>
-<segment>
 <pinref part="BAT" gate="G$1" pin="2"/>
 <pinref part="CHARGE" gate="G$1" pin="VBAT"/>
 <pinref part="C2" gate="G$1" pin="1"/>
@@ -4345,6 +4340,11 @@ Standard 8.5x11 US Letter frame</description>
 <wire x1="15.24" y1="88.9" x2="15.24" y2="86.36" width="0.1524" layer="91"/>
 <pinref part="C4" gate="G$1" pin="1"/>
 <wire x1="15.24" y1="83.82" x2="15.24" y2="86.36" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="Q1" gate="G$1" pin="D"/>
+<pinref part="SUPPLY11" gate="P" pin="+4.1V"/>
+<wire x1="121.92" y1="86.36" x2="121.92" y2="88.9" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>

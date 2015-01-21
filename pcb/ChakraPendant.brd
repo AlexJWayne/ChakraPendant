@@ -808,24 +808,17 @@ Please make sure your boards conform to these design rules.</description>
 <signal name="+4.1V" class="1">
 <contactref element="CHARGE" pad="3"/>
 <contactref element="ATTINY85" pad="8"/>
-<contactref element="Q1" pad="2"/>
 <contactref element="C2" pad="1"/>
 <contactref element="BAT" pad="2"/>
 <contactref element="U$1" pad="6"/>
 <contactref element="C4" pad="1"/>
-<via x="8.27" y="18.125" extent="1-16" drill="0.5"/>
 <via x="17.78" y="11.596" extent="1-16" drill="0.5"/>
 <wire x1="18.862" y1="10.6981" x2="18.6779" y2="10.6981" width="0.4064" layer="1"/>
 <wire x1="18.6779" y1="10.6981" x2="17.78" y2="11.596" width="0.4064" layer="1"/>
 <wire x1="2.413" y1="16.0528" x2="2.413" y2="17.399" width="0.4064" layer="1"/>
 <wire x1="2.413" y1="17.399" x2="4.23" y2="19.216" width="0.4064" layer="1"/>
 <wire x1="4.23" y1="19.216" x2="5.08" y2="19.216" width="0.4064" layer="1"/>
-<wire x1="8.27" y1="18.125" x2="8.27" y2="18.4" width="0.4064" layer="1"/>
-<wire x1="8.27" y1="18.4" x2="7.62" y2="19.05" width="0.4064" layer="1"/>
-<wire x1="7.62" y1="19.05" x2="5.08" y2="19.05" width="0.4064" layer="1"/>
 <wire x1="5.08" y1="19.05" x2="5.08" y2="19.216" width="0.4064" layer="1"/>
-<wire x1="8.27" y1="18.125" x2="8.219" y2="18.125" width="0.4064" layer="16"/>
-<wire x1="8.219" y1="18.125" x2="4.064" y2="13.97" width="0.4064" layer="16"/>
 <wire x1="4.064" y1="13.97" x2="4.064" y2="10.922" width="0.4064" layer="16"/>
 <wire x1="4.064" y1="10.922" x2="6.096" y2="8.89" width="0.4064" layer="16"/>
 <wire x1="6.096" y1="8.89" x2="9.652" y2="8.89" width="0.4064" layer="16"/>
@@ -836,6 +829,12 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="19.558" y1="13.97" x2="18.796" y2="13.208" width="0.4064" layer="16"/>
 <wire x1="18.796" y1="13.208" x2="18.796" y2="12.612" width="0.4064" layer="16"/>
 <wire x1="18.796" y1="12.612" x2="17.78" y2="11.596" width="0.4064" layer="16"/>
+<contactref element="Q1" pad="3"/>
+<wire x1="4.064" y1="13.97" x2="7.62" y2="17.526" width="0.4064" layer="16"/>
+<wire x1="7.62" y1="17.526" x2="7.62" y2="19.975" width="0.4064" layer="16"/>
+<via x="7.62" y="19.975" extent="1-16" drill="0.5"/>
+<wire x1="5.08" y1="19.216" x2="6.861" y2="19.216" width="0.4064" layer="1"/>
+<wire x1="6.861" y1="19.216" x2="7.62" y2="19.975" width="0.4064" layer="1"/>
 </signal>
 <signal name="PB2-SCK">
 <contactref element="Q1" pad="1"/>
@@ -868,13 +867,14 @@ Please make sure your boards conform to these design rules.</description>
 <wire x1="20.762" y1="6.438" x2="20.762" y2="8.0979" width="0.4064" layer="1"/>
 </signal>
 <signal name="N$1" class="1">
-<contactref element="Q1" pad="3"/>
 <contactref element="C3" pad="1"/>
 <contactref element="LEDPWR" pad="1"/>
-<wire x1="8.89" y1="22.352" x2="8.89" y2="19.975" width="0.4064" layer="1"/>
-<wire x1="8.89" y1="19.975" x2="7.62" y2="19.975" width="0.4064" layer="1"/>
-<wire x1="7.62" y1="19.975" x2="10.668" y2="19.975" width="0.4064" layer="1"/>
-<wire x1="10.668" y1="19.975" x2="10.668" y2="19.688" width="0.4064" layer="1"/>
+<contactref element="Q1" pad="2"/>
+<wire x1="8.27" y1="18.125" x2="8.89" y2="18.745" width="0.4064" layer="1"/>
+<wire x1="8.89" y1="18.745" x2="8.89" y2="19.812" width="0.4064" layer="1"/>
+<wire x1="8.89" y1="19.812" x2="8.89" y2="22.352" width="0.4064" layer="1"/>
+<wire x1="10.668" y1="19.688" x2="10.544" y2="19.812" width="0.4064" layer="1"/>
+<wire x1="10.544" y1="19.812" x2="8.89" y2="19.812" width="0.4064" layer="1"/>
 </signal>
 <signal name="USB5V" class="1">
 <contactref element="JP1" pad="VBUS"/>
