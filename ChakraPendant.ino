@@ -3,12 +3,14 @@
 #include <avr/power.h>
 
 #include "FastLED.h"
-#define NUM_LEDS 7
 #define LED_PIN 0
 #define BUTTON_PIN 1
+#define LED_PWR_PIN 2
+
+#define NUM_LEDS 7
 #define BRIGHTNESS 64
 #define LED_ANGLE 255 / 6
-#define START_MODE 8
+#define START_MODE 0
 #define MODES 8
 
 #define HUE_RED      0
@@ -42,10 +44,12 @@ void setup() {
   FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
 
   pinMode(BUTTON_PIN, INPUT_PULLUP);
+
+  digitalWrite(LED_PWR_PIN, HIGH);
 }
 
 void loop() {
-  if ((buttonPressedAt) && (millis() > (buttonPressedAt + 3000))) {
+  if ((buttonPressedAt) && (millis() > (buttonPressedAt + 2000))) {
     sleepOnRelease = true;
   }
   buttonPushed(); // update pushed button state
@@ -84,7 +88,7 @@ void loop() {
 
 void sleepNow() {
   FastLED.showColor(CRGB::Black); // Turn off LEDs
-  /*digitalWrite(BUTTON_PIN, LOW);*/
+  digitalWrite(LED_PWR_PIN, LOW);
   delay(100);
 
   PCMSK  |= _BV(PCINT1);  // Watch pin PB1
@@ -102,7 +106,7 @@ void sleepNow() {
 
   sleepOnRelease = false;
   changeModeOnRelease = false;
-  /*digitalWrite(BUTTON_PIN, HIGH);*/
+  digitalWrite(LED_PWR_PIN, HIGH);
 }
 
 ISR (PCINT0_vect) {}
@@ -149,7 +153,7 @@ bool buttonReleased() {
 // - PROGRAMS
 // -
 
-#define RAINBOW_SPEED 10
+#define RAINBOW_SPEED 20
 uint16_t rainbow_hue = 0;
 void rainbow(void) {
   rainbow_hue += RAINBOW_SPEED;
@@ -161,7 +165,7 @@ void rainbow(void) {
   }
 }
 
-#define CHAKRA1_SPEED 40
+#define CHAKRA1_SPEED 160
 uint16_t chakra1_brightness = 0;
 void chakra1() {
   chakra1_brightness += CHAKRA1_SPEED;
@@ -180,7 +184,7 @@ void chakra1() {
   leds[0].r = dim8_raw(leds[0].r);
 }
 
-#define CHAKRA2_SPEED 40
+#define CHAKRA2_SPEED 160
 uint16_t chakra2_brightness = 0;
 void chakra2() {
   chakra2_brightness += CHAKRA2_SPEED;
@@ -207,7 +211,7 @@ void chakra2() {
 void chakra3() {
 
   if (random16() < CHAKRA3_THRESHOLD) {
-    leds[random8(8)] = CHSV(
+    leds[random8(NUM_LEDS)] = CHSV(
       HUE_YELLOW + random8(20) - 5,
       random8(215, 255),
       255
@@ -222,7 +226,7 @@ void chakra3() {
   FastLED.delay(30);
 }
 
-#define CHAKRA4_SPEED 100
+#define CHAKRA4_SPEED 400
 #define CHAKRA4_DARKEST 75
 #define CHAKRA4_MID_BEAT 48
 #define CHAKRA4_END_BEAT 192
@@ -253,7 +257,7 @@ void chakra4() {
   }
 }
 
-#define CHAKRA5_SPEED 100
+#define CHAKRA5_SPEED 400
 #define CHAKRA5_SHIMMER 15
 #define CHAKRA5_MIN 92
 
@@ -280,7 +284,7 @@ void chakra5() {
   }
 }
 
-#define CHAKRA6_SPEED 90
+#define CHAKRA6_SPEED 240
 uint16_t chakra6_phase = 0;
 void chakra6() {
   chakra6_phase += CHAKRA6_SPEED;
@@ -297,7 +301,7 @@ void chakra6() {
   }
 }
 
-#define CHAKRA7_SPEED 50
+#define CHAKRA7_SPEED 200
 uint16_t chakra7_phase = 0;
 void chakra7() {
   chakra7_phase += CHAKRA7_SPEED;
