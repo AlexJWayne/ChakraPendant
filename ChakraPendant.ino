@@ -3,12 +3,13 @@
 #include <avr/power.h>
 
 #include "FastLED.h"
-#define LED_PIN 0
+#define LED_DATA_PIN 0
+#define LED_CLOCK_PIN 4
 #define BUTTON_PIN 1
 #define LED_PWR_PIN 2
 
 #define NUM_LEDS 7
-#define BRIGHTNESS 64
+#define BRIGHTNESS 32
 #define LED_ANGLE 255 / 6
 #define START_MODE 0
 #define MODES 8
@@ -41,7 +42,7 @@ void setup() {
   GIMSK  |= _BV(PCIE);    // enable pin change interrupts
 
   FastLED.setBrightness(BRIGHTNESS);
-  FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
+  FastLED.addLeds<APA102, LED_DATA_PIN, LED_CLOCK_PIN>(leds, NUM_LEDS);
 
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 
