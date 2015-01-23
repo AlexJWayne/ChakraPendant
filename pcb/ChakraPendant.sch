@@ -4061,7 +4061,6 @@ Standard 8.5x11 US Letter frame</description>
 <part name="Q1" library="SparkFun-DiscreteSemi" deviceset="MOSFET-NCHANNEL" device="2N7002PW"/>
 <part name="U$1" library="Protofusion" deviceset="POGOPIN-CONN" device="WITHVIAS"/>
 <part name="S2" library="SparkFun-Electromechanical" deviceset="SWITCH-MOMENTARY-2" device="SMD-3"/>
-<part name="C4" library="SparkFun-Passives" deviceset="CAP" device="0603-CAP" value="0.1 uF"/>
 <part name="LEDPWR" library="SparkFun-Connectors" deviceset="M02" device="1X02_NO_SILK"/>
 <part name="LEDSIG" library="SparkFun-Connectors" deviceset="M02" device="1X02_NO_SILK"/>
 <part name="LED1" library="SparkFun-LED" deviceset="LED" device="0603" value="Amber"/>
@@ -4074,6 +4073,7 @@ Standard 8.5x11 US Letter frame</description>
 <part name="SUPPLY13" library="supply2" deviceset="+4.1V" device=""/>
 <part name="SUPPLY1" library="supply2" deviceset="GND" device=""/>
 <part name="FRAME1" library="SparkFun-Aesthetics" deviceset="FRAME-LETTER" device=""/>
+<part name="R4" library="SparkFun-Passives" deviceset="RESISTOR" device="0603-RES" value="220"/>
 </parts>
 <sheets>
 <sheet>
@@ -4085,8 +4085,8 @@ Standard 8.5x11 US Letter frame</description>
 <instance part="ATTINY85" gate="G$1" x="40.64" y="78.74"/>
 <instance part="JP1" gate="G$1" x="12.7" y="154.94" rot="MR90"/>
 <instance part="SUPPLY2" gate="GND" x="15.24" y="68.58"/>
-<instance part="SUPPLY5" gate="GND" x="121.92" y="53.34"/>
-<instance part="SUPPLY6" gate="GND" x="91.44" y="91.44"/>
+<instance part="SUPPLY5" gate="GND" x="121.92" y="71.12"/>
+<instance part="SUPPLY6" gate="GND" x="91.44" y="86.36"/>
 <instance part="SUPPLY9" gate="GND" x="60.96" y="27.94"/>
 <instance part="CHARGE" gate="G$1" x="55.88" y="139.7"/>
 <instance part="BAT" gate="G$1" x="99.06" y="157.48" rot="MR270"/>
@@ -4095,24 +4095,24 @@ Standard 8.5x11 US Letter frame</description>
 <instance part="SUPPLY10" gate="GND" x="99.06" y="139.7"/>
 <instance part="C1" gate="G$1" x="15.24" y="127" rot="MR0"/>
 <instance part="C2" gate="G$1" x="83.82" y="132.08"/>
-<instance part="C3" gate="G$1" x="121.92" y="60.96"/>
+<instance part="C3" gate="G$1" x="121.92" y="99.06"/>
 <instance part="Q1" gate="G$1" x="121.92" y="81.28"/>
 <instance part="U$1" gate="J" x="50.8" y="38.1" rot="R180"/>
-<instance part="S2" gate="G$1" x="83.82" y="96.52"/>
-<instance part="C4" gate="G$1" x="15.24" y="78.74"/>
-<instance part="LEDPWR" gate="G$1" x="109.22" y="63.5" rot="MR180"/>
-<instance part="LEDSIG" gate="G$1" x="81.28" y="73.66" rot="R180"/>
+<instance part="S2" gate="G$1" x="83.82" y="91.44"/>
+<instance part="LEDPWR" gate="G$1" x="109.22" y="101.6" rot="MR180"/>
+<instance part="LEDSIG" gate="G$1" x="81.28" y="71.12" rot="MR0"/>
 <instance part="LED1" gate="G$1" x="27.94" y="134.62" rot="MR0"/>
 <instance part="LED2" gate="G$1" x="40.64" y="134.62" rot="MR0"/>
 <instance part="R2" gate="G$1" x="27.94" y="124.46" rot="R90"/>
 <instance part="R3" gate="G$1" x="40.64" y="124.46" rot="R90"/>
 <instance part="SUPPLY7" gate="P" x="55.88" y="27.94" rot="R180"/>
-<instance part="SUPPLY11" gate="P" x="121.92" y="91.44"/>
+<instance part="SUPPLY11" gate="P" x="121.92" y="111.76"/>
 <instance part="SUPPLY12" gate="P" x="15.24" y="91.44"/>
 <instance part="SUPPLY13" gate="P" x="83.82" y="147.32"/>
 <instance part="SUPPLY1" gate="GND" x="83.82" y="114.3"/>
 <instance part="FRAME1" gate="G$1" x="0" y="0"/>
 <instance part="FRAME1" gate="G$2" x="147.32" y="0"/>
+<instance part="R4" gate="G$1" x="106.68" y="81.28"/>
 </instances>
 <busses>
 </busses>
@@ -4123,18 +4123,6 @@ Standard 8.5x11 US Letter frame</description>
 <wire x1="15.24" y1="73.66" x2="25.4" y2="73.66" width="0.1524" layer="91"/>
 <wire x1="15.24" y1="73.66" x2="15.24" y2="71.12" width="0.1524" layer="91"/>
 <pinref part="SUPPLY2" gate="GND" pin="GND"/>
-<pinref part="C4" gate="G$1" pin="2"/>
-<wire x1="15.24" y1="73.66" x2="15.24" y2="76.2" width="0.1524" layer="91"/>
-<junction x="15.24" y="73.66"/>
-</segment>
-<segment>
-<pinref part="SUPPLY5" gate="GND" pin="GND"/>
-<pinref part="C3" gate="G$1" pin="2"/>
-<pinref part="LEDPWR" gate="G$1" pin="2"/>
-<wire x1="121.92" y1="55.88" x2="121.92" y2="58.42" width="0.1524" layer="91"/>
-<junction x="121.92" y="58.42"/>
-<wire x1="116.84" y1="60.96" x2="116.84" y2="58.42" width="0.1524" layer="91"/>
-<wire x1="116.84" y1="58.42" x2="121.92" y2="58.42" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="SUPPLY9" gate="GND" pin="GND"/>
@@ -4145,8 +4133,8 @@ Standard 8.5x11 US Letter frame</description>
 <segment>
 <pinref part="SUPPLY6" gate="GND" pin="GND"/>
 <pinref part="S2" gate="G$1" pin="2"/>
-<wire x1="88.9" y1="96.52" x2="91.44" y2="96.52" width="0.1524" layer="91"/>
-<wire x1="91.44" y1="96.52" x2="91.44" y2="93.98" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="91.44" x2="91.44" y2="91.44" width="0.1524" layer="91"/>
+<wire x1="91.44" y1="91.44" x2="91.44" y2="88.9" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="SUPPLY8" gate="GND" pin="GND"/>
@@ -4184,6 +4172,11 @@ Standard 8.5x11 US Letter frame</description>
 <junction x="68.58" y="116.84"/>
 <pinref part="SUPPLY1" gate="GND" pin="GND"/>
 </segment>
+<segment>
+<pinref part="SUPPLY5" gate="GND" pin="GND"/>
+<pinref part="Q1" gate="G$1" pin="S"/>
+<wire x1="121.92" y1="73.66" x2="121.92" y2="76.2" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="PB0-MOSI" class="0">
 <segment>
@@ -4192,12 +4185,12 @@ Standard 8.5x11 US Letter frame</description>
 <label x="60.96" y="43.18" size="1.016" layer="95" xref="yes"/>
 </segment>
 <segment>
-<pinref part="LEDSIG" gate="G$1" pin="1"/>
 <pinref part="ATTINY85" gate="G$1" pin="PB0(MOSI)"/>
-<wire x1="66.04" y1="73.66" x2="73.66" y2="73.66" width="0.1524" layer="91"/>
 <label x="55.88" y="86.36" size="1.016" layer="95" rot="R90" xref="yes"/>
 <wire x1="53.34" y1="86.36" x2="66.04" y2="86.36" width="0.1524" layer="91"/>
 <wire x1="66.04" y1="86.36" x2="66.04" y2="73.66" width="0.1524" layer="91"/>
+<pinref part="LEDSIG" gate="G$1" pin="2"/>
+<wire x1="73.66" y1="73.66" x2="66.04" y2="73.66" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PB1-MISO" class="0">
@@ -4205,8 +4198,8 @@ Standard 8.5x11 US Letter frame</description>
 <pinref part="ATTINY85" gate="G$1" pin="PB1(MISO)"/>
 <label x="71.12" y="83.82" size="1.016" layer="95" rot="R90" xref="yes"/>
 <pinref part="S2" gate="G$1" pin="1"/>
-<wire x1="76.2" y1="83.82" x2="76.2" y2="96.52" width="0.1524" layer="91"/>
-<wire x1="78.74" y1="96.52" x2="76.2" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="76.2" y1="83.82" x2="76.2" y2="91.44" width="0.1524" layer="91"/>
+<wire x1="78.74" y1="91.44" x2="76.2" y2="91.44" width="0.1524" layer="91"/>
 <wire x1="53.34" y1="83.82" x2="76.2" y2="83.82" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -4217,15 +4210,15 @@ Standard 8.5x11 US Letter frame</description>
 </net>
 <net name="PB2-SCK" class="0">
 <segment>
-<pinref part="Q1" gate="G$1" pin="G"/>
-<pinref part="ATTINY85" gate="G$1" pin="PB2(SCK/ADC1)"/>
-<label x="81.28" y="81.28" size="1.016" layer="95" rot="R90" xref="yes"/>
-<wire x1="114.3" y1="81.28" x2="53.34" y2="81.28" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="U$1" gate="J" pin="SCK"/>
 <wire x1="53.34" y1="38.1" x2="60.96" y2="38.1" width="0.1524" layer="91"/>
 <label x="60.96" y="38.1" size="1.016" layer="95" xref="yes"/>
+<label x="99.06" y="81.28" size="1.016" layer="95" rot="R270" xref="yes"/>
+</segment>
+<segment>
+<pinref part="ATTINY85" gate="G$1" pin="PB2(SCK/ADC1)"/>
+<wire x1="53.34" y1="81.28" x2="101.6" y2="81.28" width="0.1524" layer="91"/>
+<pinref part="R4" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="PB5-RESET" class="0">
@@ -4248,17 +4241,6 @@ Standard 8.5x11 US Letter frame</description>
 <wire x1="76.2" y1="139.7" x2="76.2" y2="137.16" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$1" class="1">
-<segment>
-<pinref part="C3" gate="G$1" pin="1"/>
-<pinref part="LEDPWR" gate="G$1" pin="1"/>
-<wire x1="116.84" y1="63.5" x2="116.84" y2="66.04" width="0.1524" layer="91"/>
-<wire x1="116.84" y1="66.04" x2="121.92" y2="66.04" width="0.1524" layer="91"/>
-<pinref part="Q1" gate="G$1" pin="S"/>
-<wire x1="121.92" y1="76.2" x2="121.92" y2="66.04" width="0.1524" layer="91"/>
-<junction x="121.92" y="66.04"/>
-</segment>
-</net>
 <net name="USB5V" class="1">
 <segment>
 <pinref part="JP1" gate="G$1" pin="VBUS"/>
@@ -4279,8 +4261,8 @@ Standard 8.5x11 US Letter frame</description>
 <segment>
 <pinref part="ATTINY85" gate="G$1" pin="PB4(ADC2)"/>
 <wire x1="53.34" y1="76.2" x2="63.5" y2="76.2" width="0.1524" layer="91"/>
-<pinref part="LEDSIG" gate="G$1" pin="2"/>
 <wire x1="63.5" y1="76.2" x2="63.5" y2="71.12" width="0.1524" layer="91"/>
+<pinref part="LEDSIG" gate="G$1" pin="1"/>
 <wire x1="63.5" y1="71.12" x2="73.66" y2="71.12" width="0.1524" layer="91"/>
 </segment>
 </net>
@@ -4334,17 +4316,35 @@ Standard 8.5x11 US Letter frame</description>
 <segment>
 <pinref part="ATTINY85" gate="G$1" pin="VCC"/>
 <wire x1="15.24" y1="86.36" x2="25.4" y2="86.36" width="0.1524" layer="91"/>
-<junction x="15.24" y="86.36"/>
-<junction x="15.24" y="86.36"/>
 <pinref part="SUPPLY12" gate="P" pin="+4.1V"/>
 <wire x1="15.24" y1="88.9" x2="15.24" y2="86.36" width="0.1524" layer="91"/>
-<pinref part="C4" gate="G$1" pin="1"/>
-<wire x1="15.24" y1="83.82" x2="15.24" y2="86.36" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="Q1" gate="G$1" pin="D"/>
+<pinref part="C3" gate="G$1" pin="1"/>
+<pinref part="LEDPWR" gate="G$1" pin="1"/>
+<wire x1="116.84" y1="101.6" x2="116.84" y2="104.14" width="0.1524" layer="91"/>
+<wire x1="116.84" y1="104.14" x2="121.92" y2="104.14" width="0.1524" layer="91"/>
 <pinref part="SUPPLY11" gate="P" pin="+4.1V"/>
-<wire x1="121.92" y1="86.36" x2="121.92" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="121.92" y1="109.22" x2="121.92" y2="104.14" width="0.1524" layer="91"/>
+<junction x="121.92" y="104.14"/>
+</segment>
+</net>
+<net name="N$2" class="1">
+<segment>
+<pinref part="C3" gate="G$1" pin="2"/>
+<pinref part="LEDPWR" gate="G$1" pin="2"/>
+<wire x1="116.84" y1="99.06" x2="116.84" y2="96.52" width="0.1524" layer="91"/>
+<wire x1="116.84" y1="96.52" x2="121.92" y2="96.52" width="0.1524" layer="91"/>
+<pinref part="Q1" gate="G$1" pin="D"/>
+<wire x1="121.92" y1="96.52" x2="121.92" y2="86.36" width="0.1524" layer="91"/>
+<junction x="121.92" y="96.52"/>
+</segment>
+</net>
+<net name="N$1" class="0">
+<segment>
+<pinref part="R4" gate="G$1" pin="2"/>
+<pinref part="Q1" gate="G$1" pin="G"/>
+<wire x1="111.76" y1="81.28" x2="114.3" y2="81.28" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
