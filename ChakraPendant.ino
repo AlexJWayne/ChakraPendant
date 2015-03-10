@@ -3,13 +3,13 @@
 #include <avr/power.h>
 
 #include "FastLED.h"
-#define LED_DATA_PIN 0
-#define LED_CLOCK_PIN 4
-#define BUTTON_PIN 1
-#define LED_PWR_PIN 2
+#define LED_DATA_PIN 4
+#define LED_CLOCK_PIN 2
+#define BUTTON_PIN 0
+#define LED_PWR_PIN 3
 
 #define NUM_LEDS 7
-#define BRIGHTNESS 32
+#define BRIGHTNESS 16
 #define LED_ANGLE 255 / 6
 #define START_MODE 0
 #define MODES 8
@@ -43,10 +43,21 @@ void setup() {
 
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.addLeds<APA102, LED_DATA_PIN, LED_CLOCK_PIN>(leds, NUM_LEDS);
+//  FastLED.addLeds<NEOPIXEL, LED_DATA_PIN>(leds, NUM_LEDS);
+//  FastLED.setDither(0);
 
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 
+  pinMode(LED_PWR_PIN, OUTPUT);
   digitalWrite(LED_PWR_PIN, HIGH);
+
+
+
+  /*delay(1000);
+  digitalWrite(LED_PWR_PIN, HIGH);
+  delay(1000);
+  digitalWrite(LED_PWR_PIN, LOW);
+  delay(1000);*/
 }
 
 void loop() {
@@ -89,10 +100,12 @@ void loop() {
 
 void sleepNow() {
   FastLED.showColor(CRGB::Black); // Turn off LEDs
-  digitalWrite(LED_PWR_PIN, LOW);
+  digitalWrite(LED_PWR_PIN,   LOW);
+  digitalWrite(LED_DATA_PIN,  LOW);
+  digitalWrite(LED_CLOCK_PIN, LOW);
   delay(100);
 
-  PCMSK  |= _BV(PCINT1);  // Watch pin PB1
+  PCMSK  |= _BV(PCINT0);  // Watch pin PB1
   GIFR   |= _BV(PCIF);    // clear any outstanding interrupts
 
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
@@ -103,7 +116,7 @@ void sleepNow() {
   // wake
   sleep_disable();
   power_all_enable();    // power everything back on
-  PCMSK &= ~_BV(PCINT1); // Turn off PB1 as interrupt pin
+  PCMSK &= ~_BV(PCINT0); // Turn off PB1 as interrupt pin
 
   sleepOnRelease = false;
   changeModeOnRelease = false;
@@ -166,7 +179,7 @@ void rainbow(void) {
   }
 }
 
-#define CHAKRA1_SPEED 160
+#define CHAKRA1_SPEED 80
 uint16_t chakra1_brightness = 0;
 void chakra1() {
   chakra1_brightness += CHAKRA1_SPEED;
@@ -185,7 +198,7 @@ void chakra1() {
   leds[0].r = dim8_raw(leds[0].r);
 }
 
-#define CHAKRA2_SPEED 160
+#define CHAKRA2_SPEED 80
 uint16_t chakra2_brightness = 0;
 void chakra2() {
   chakra2_brightness += CHAKRA2_SPEED;
@@ -227,7 +240,7 @@ void chakra3() {
   FastLED.delay(30);
 }
 
-#define CHAKRA4_SPEED 400
+#define CHAKRA4_SPEED 100
 #define CHAKRA4_DARKEST 75
 #define CHAKRA4_MID_BEAT 48
 #define CHAKRA4_END_BEAT 192
@@ -258,15 +271,15 @@ void chakra4() {
   }
 }
 
-#define CHAKRA5_SPEED 400
-#define CHAKRA5_SHIMMER 15
+#define CHAKRA5_SPEED 300
+#define CHAKRA5_SHIMMER 30
 #define CHAKRA5_MIN 92
 
 uint16_t chakra5_phase = 0;
 void chakra5() {
   chakra5_phase -= CHAKRA5_SPEED;
   for (uint8_t i = 0; i < NUM_LEDS; i++) {
-    uint8_t brightness = scale8(quadwave8((LED_ANGLE * i) + (chakra5_phase >> 2)), CHAKRA5_SHIMMER);
+    uint8_t brightness = scale8(quadwave8((LED_ANGLE * i) + (chakra5_phase >> 4)), CHAKRA5_SHIMMER);
 
     if (i > 0) {
       brightness += scale8(

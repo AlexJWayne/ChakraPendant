@@ -1,12 +1,12 @@
-pixelWidth  = 23;
-pixelHeight = 2.8;
+pixelWidth  = 25.4;
+pixelHeight = 2.6;
 
 battWidth  = 25.5;
 battLength = 19.5;
 battHeight = 4;
 battClearance = 0.3;
 
-battPcbGap = 4;
+battPcbGap = 0;
 
 pcbWidth  = 25.4;
 pcbHeight = 1.75;
@@ -20,28 +20,28 @@ switchLength = 10;
 switchHeight = 3;
 
 bodyWidth  = 35;
-bodyHeight = 18;
+bodyHeight = 16;
 bodyWall   = 1.6;
-bodyBezel  = 6.5;
+bodyBezel  = 6;
 
 /////// Assembly
 
 /*PendantComponents();*/
 
-union() {
-  rotate([180, 0, 0]) {
+rotate([180, 0, 0])
+  union() {
+    /*difference() { Body(); cube([100, 100, 100]); }*/
     Body();
 
-  // hook tabs
-  translate([0, pcbWidth/2 + 0.25, usbHeight-0.5])
-    scale([2, 1, 1])
-      tab();
+    /*// hook tabs
+    translate([0, pcbWidth/2 + 0.25, usbHeight-0.5])
+      scale([2, 1, 1])
+        tab();
 
-  translate([-battWidth/2 - 0.5, 0, usbHeight-0.5])
-    scale([1, 2, 1])
-      tab();
+    translate([-battWidth/2 - 0.5, 0, usbHeight-0.5])
+      scale([1, 2, 1])
+        tab();*/
   }
-}
 
 
 
@@ -78,19 +78,18 @@ module Body() {
 
       // USB cutout
       translate([0, -(pcbWidth - usbLength)/2 - 5, 0])
-      hcCube(usbWidth + 3, usbLength + 4, usbHeight + 3);
 
-      // Power Switch cutout
+      /*// Power Switch cutout
       translate([pcbWidth/2-switchWidth/2 + 5, 0, 0])
-      hcCube(switchWidth + 4, switchLength + 3, switchHeight + 3);
+      hcCube(switchWidth + 4, switchLength + 3, switchHeight + 3);*/
 
       // chain channel
-      translate([0, 14, 5])
+      translate([0, 14, 3])
       hcCube(50, 2, 4);
     }
 
     // Chamfer top edge
-    cylinder(r1=bodyWidth * 0.74, r2=0, h=bodyWidth * 1.4, center=false, $fn=360);
+    cylinder(r1=bodyWidth * 0.74, r2=0, h=bodyWidth * 1, center=false, $fn=360);
   }
 }
 
@@ -99,14 +98,16 @@ module tab() {
 }
 
 module PendantComponents() {
+
+  translate([0, 0, 1])
   color([.75, .25, .25]) {
     // USB Port
     translate([0, -(pcbWidth/2-usbLength/2), ])
       hcCube(usbWidth, usbLength, usbHeight);
 
-    // Power Switch
+    /*// Power Switch
     translate([pcbWidth/2-switchWidth/2, 0, 0])
-      hcCube(switchWidth, switchLength, switchHeight);
+      hcCube(switchWidth, switchLength, switchHeight);*/
 
     // PCB
     translate([0, 0, usbHeight])
