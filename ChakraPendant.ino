@@ -102,6 +102,7 @@ void loop() {
       sleepNow();
     } else if (changeModeOnRelease) {
       mode++;
+      if (cyclingMode) lastCycle = now;
     } else {
       changeModeOnRelease = true;
     }
