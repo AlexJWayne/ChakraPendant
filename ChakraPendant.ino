@@ -3,85 +3,125 @@
 #include <avr/power.h>
 
 #include "FastLED.h"
-#define LED_DATA_PIN 4
+
+#define BUTTON_PIN    0
+#define LED_PWR_PIN   1
 #define LED_CLOCK_PIN 2
-#define BUTTON_PIN 0
-#define LED_PWR_PIN 3
+#define LED_DATA_PIN  3
 
 #define NUM_LEDS 7
 #define BRIGHTNESS 16
 #define LED_ANGLE 255 / 6
+
+
 #define START_MODE 0
 #define MODES 8
+
+#define SLEEP_DELAY 1000
+#define CYCLE_DELAY 3000
+#define CYCLE_DURATION 10000
 
 #define HUE_RED      0
 #define HUE_ORANGE  30
 #define HUE_YELLOW  50
 #define HUE_GREEN   96
 #define HUE_BLUE   160
-#define HUE_INDIGO 185
+#define HUE_INDIGO 180
 #define HUE_VIOLET 205
 
 CRGB leds[NUM_LEDS];
 
 uint8_t mode = START_MODE;
+bool cyclingMode = false;
+unsigned long lastCycle = 0;
 
 bool sleepOnRelease = false;
 bool changeModeOnRelease = true;
 
 // button state variables
-bool buttonPrevPressed    = false;
-bool buttonPrevReleased   = true;
-uint32_t buttonPressedAt  = 0;
-/*uint32_t buttonReleasedAt = 0;*/
+bool buttonPrevPressed        = false;
+bool buttonPrevReleased       = true;
+unsigned long buttonPressedAt = 0;
 
 
 
 void setup() {
   ADCSRA = 0;             // turn off ADC
-  GIMSK  |= _BV(PCIE);    // enable pin change interrupts
+  GIMSK  |= _BV(PCIE0);    // enable pin change interrupts
 
   FastLED.setBrightness(BRIGHTNESS);
   FastLED.addLeds<APA102, LED_DATA_PIN, LED_CLOCK_PIN>(leds, NUM_LEDS);
-//  FastLED.addLeds<NEOPIXEL, LED_DATA_PIN>(leds, NUM_LEDS);
-//  FastLED.setDither(0);
 
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 
   pinMode(LED_PWR_PIN, OUTPUT);
   digitalWrite(LED_PWR_PIN, HIGH);
-
-
-
-  /*delay(1000);
-  digitalWrite(LED_PWR_PIN, HIGH);
-  delay(1000);
-  digitalWrite(LED_PWR_PIN, LOW);
-  delay(1000);*/
 }
 
 void loop() {
-  if ((buttonPressedAt) && (millis() > (buttonPressedAt + 2000))) {
-    sleepOnRelease = true;
+  unsigned long now = millis();
+
+  if (buttonPressedAt) {
+
+    // Cycle modes when held for a long time
+    if (now > (buttonPressedAt + CYCLE_DELAY)) {
+      if (sleepOnRelease) {
+        cyclingMode = !cyclingMode;
+        sleepOnRelease = false;
+        changeModeOnRelease = false;
+
+        if (cyclingMode) {
+          for (uint8_t i = 0; i < 255; i++) {
+            FastLED.showColor(CHSV(i, 255, 255));
+            FastLED.delay(1);
+          }
+        } else {
+          for (uint8_t i = 255; i > 0; i--) {
+            FastLED.showColor(CHSV(0, 0, i));
+            FastLED.delay(1);
+          }
+        }
+
+        lastCycle = now;
+      }
+    }
+
+    // Sleep when held for a short time.
+    else if (now > (buttonPressedAt + SLEEP_DELAY)) {
+      sleepOnRelease = true;
+    }
   }
-  buttonPushed(); // update pushed button state
 
 
+  // Update pushed button state.
+  buttonPushed();
+
+  // Handle button release.
   if (buttonReleased()) {
     if (sleepOnRelease) {
       sleepNow();
     } else if (changeModeOnRelease) {
       mode++;
-      if (mode >= MODES) mode = 0;
     } else {
       changeModeOnRelease = true;
     }
   }
 
+  // Cycle mode if we are cycling, and it's time.
+  if (cyclingMode && (now > (lastCycle + CYCLE_DURATION))) {
+    lastCycle = now;
+    mode++;
+  }
+
+  // Go black to indicate power off.
   if (sleepOnRelease) {
     FastLED.showColor(CRGB::Black);
-  } else {
-    // normal operation
+  }
+
+  // Do the animations!
+  // YAY!
+  else {
+    if (mode >= MODES) mode = 0;
     switch(mode) {
       case 0: rainbow(); break;
       case 1: chakra1(); break;
@@ -91,11 +131,9 @@ void loop() {
       case 5: chakra5(); break;
       case 6: chakra6(); break;
       case 7: chakra7(); break;
-      default: mode = 0;
     }
     FastLED.show();
   }
-
 }
 
 void sleepNow() {
@@ -105,8 +143,8 @@ void sleepNow() {
   digitalWrite(LED_CLOCK_PIN, LOW);
   delay(100);
 
-  PCMSK  |= _BV(PCINT0);  // Watch pin PB1
-  GIFR   |= _BV(PCIF);    // clear any outstanding interrupts
+  PCMSK0 |= _BV(PCINT0);  // Watch pin PB1
+  GIFR   |= _BV(PCIE0);   // clear any outstanding interrupts
 
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
   power_all_disable();  // power off ADC, Timer 0 and 1, serial interface
@@ -116,7 +154,7 @@ void sleepNow() {
   // wake
   sleep_disable();
   power_all_enable();    // power everything back on
-  PCMSK &= ~_BV(PCINT0); // Turn off PB1 as interrupt pin
+  PCMSK0 &= ~_BV(PCINT0); // Turn off PB1 as interrupt pin
 
   sleepOnRelease = false;
   changeModeOnRelease = false;
@@ -167,7 +205,7 @@ bool buttonReleased() {
 // - PROGRAMS
 // -
 
-#define RAINBOW_SPEED 20
+#define RAINBOW_SPEED 25
 uint16_t rainbow_hue = 0;
 void rainbow(void) {
   rainbow_hue += RAINBOW_SPEED;
@@ -179,14 +217,14 @@ void rainbow(void) {
   }
 }
 
-#define CHAKRA1_SPEED 80
+#define CHAKRA1_SPEED 300
 uint16_t chakra1_brightness = 0;
 void chakra1() {
   chakra1_brightness += CHAKRA1_SPEED;
   uint8_t bright = scale8(quadwave8(chakra1_brightness >> 8), 160) + 95;
 
   for (uint8_t i = 0; i < NUM_LEDS; i++) {
-    uint8_t swirlVal = swirl(true, 1, i, 30, 255);
+    uint8_t swirlVal = swirl(true, 1, i, 70, 255);
 
     leds[i] = CHSV(
       HUE_RED,
@@ -198,7 +236,7 @@ void chakra1() {
   leds[0].r = dim8_raw(leds[0].r);
 }
 
-#define CHAKRA2_SPEED 80
+#define CHAKRA2_SPEED 240
 uint16_t chakra2_brightness = 0;
 void chakra2() {
   chakra2_brightness += CHAKRA2_SPEED;
@@ -214,14 +252,14 @@ void chakra2() {
     leds[i] = CHSV(
       HUE_ORANGE,
       255,
-      qadd8(outer, swirl(false, 1, i, 30, 64))
+      qadd8(outer, swirl(false, 1, i, 90, 64))
     );
     FastLED.show();
   }
 }
 
-#define CHAKRA3_FADE 12
-#define CHAKRA3_THRESHOLD 12000
+#define CHAKRA3_FADE 14
+#define CHAKRA3_THRESHOLD 24000
 void chakra3() {
 
   if (random16() < CHAKRA3_THRESHOLD) {
@@ -240,7 +278,7 @@ void chakra3() {
   FastLED.delay(30);
 }
 
-#define CHAKRA4_SPEED 100
+#define CHAKRA4_SPEED 300
 #define CHAKRA4_DARKEST 75
 #define CHAKRA4_MID_BEAT 48
 #define CHAKRA4_END_BEAT 192
@@ -264,7 +302,7 @@ void chakra4() {
 
     brightness = quadwave8(progress);
     brightness = CHAKRA4_DARKEST + scale8(brightness, 255-CHAKRA4_DARKEST);
-    if (i > 0) brightness -= swirl(false, 2, i, 20, 48);
+    if (i > 0) brightness -= swirl(false, 2, i, 70, 48);
 
     leds[i] = CHSV(HUE_GREEN, (i == 0 ? 0xBB : 0xFF), brightness);
     FastLED.show();
@@ -272,14 +310,17 @@ void chakra4() {
 }
 
 #define CHAKRA5_SPEED 300
-#define CHAKRA5_SHIMMER 30
+#define CHAKRA5_SHIMMER 25
 #define CHAKRA5_MIN 92
 
 uint16_t chakra5_phase = 0;
 void chakra5() {
   chakra5_phase -= CHAKRA5_SPEED;
   for (uint8_t i = 0; i < NUM_LEDS; i++) {
-    uint8_t brightness = scale8(quadwave8((LED_ANGLE * i) + (chakra5_phase >> 4)), CHAKRA5_SHIMMER);
+    uint8_t brightness = scale8(
+      quadwave8((LED_ANGLE * i) + (chakra5_phase >> 2)),
+      CHAKRA5_SHIMMER
+    );
 
     if (i > 0) {
       brightness += scale8(
@@ -298,12 +339,15 @@ void chakra5() {
   }
 }
 
-#define CHAKRA6_SPEED 240
+#define CHAKRA6_SPEED 320
 uint16_t chakra6_phase = 0;
 void chakra6() {
   chakra6_phase += CHAKRA6_SPEED;
 
-  leds[0] = CHSV(HUE_INDIGO, 64, scale8(quadwave8(chakra6_phase >> 8), 255-92) + 92);
+  leds[0] = CHSV(HUE_INDIGO, 64, scale8(
+    quadwave8(chakra6_phase >> 8),
+    255-92
+  ) + 92);
   FastLED.show();
 
   for (uint8_t i = 1; i < NUM_LEDS; i++) {
@@ -315,7 +359,7 @@ void chakra6() {
   }
 }
 
-#define CHAKRA7_SPEED 200
+#define CHAKRA7_SPEED 250
 uint16_t chakra7_phase = 0;
 void chakra7() {
   chakra7_phase += CHAKRA7_SPEED;
