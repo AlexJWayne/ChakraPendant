@@ -1,4 +1,4 @@
-# Bill of Materials
+# Bill of Materials (OUTDATED)
 
 * [1 x ATTiny85 $1.33](http://www.mouser.com/Search/ProductDetail.aspx?R=ATTINY85-20SUvirtualkey55660000virtualkey556-ATTINY85-20SU)
 * [1 x Slide Switch $0.96](http://www.mouser.com/Search/ProductDetail.aspx?R=SK-12C0405-SG_1.5_RTvirtualkey61110000virtualkey611-SK12C0405SG1.5RT)
