@@ -7,18 +7,19 @@ Pendant LED mapping
 * second (1) is the top
 * sprials clockwise around until the seventh (6)
 
-    \          /
-     \ chain /
-      \    /
-      _\_/_
-    /      \
-  /    1    \
- |  6     2  |
- |     0     |
- |  5     3  |
-  \    4    /
-   \______/
-    |USB|
+        \         /
+         \       /
+          \     /
+           \   /
+           _\_/_
+         /       \
+        /    1    \
+       |  6     2  |
+       |     0     |
+       |  5     3  |
+        \    4    /
+         \_______/
+           |USB|
 
 */
 
