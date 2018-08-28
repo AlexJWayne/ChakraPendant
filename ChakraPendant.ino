@@ -1,6 +1,9 @@
 #include "FastLED.h"
 #include "Pendant.h"
 
+// ATtiny84 Fuses: (E:FF, H:DF, L:E2)
+// avrdude -c usbtiny -p attiny84 -U lfuse:w:0xE2:m hfuse:w:0xDF:m efuse:w:0xFF:m
+
 // The pendant instance
 Pendant pendant = Pendant(8); // pass in the the total number of modes
 
@@ -92,24 +95,52 @@ void chakra2() {
   }
 }
 
-#define CHAKRA3_FADE 14
-#define CHAKRA3_THRESHOLD 24000
+#define CHAKRA3_SPEED 250
+#define CHAKRA3_DARKEST 90
+#define CHAKRA3_MID_BEAT 48
+#define CHAKRA3_END_BEAT 192
+#define CHAKRA3_FLICKER_THRESHOLD 20000
+uint8_t flicker[] = { 1, 1, 1, 1, 1, 1, 1 };
+uint16_t chakra3_phase = 0;
 void chakra3() {
-
-  if (random16() < CHAKRA3_THRESHOLD) {
-    pendant.leds[random8(pendant.ledCount)] = CHSV(
-      HUE_YELLOW + random8(20) - 5,
-      random8(215, 255),
-      255
-    );
-    FastLED.show();
+  // Flicker
+  uint8_t hue = 0;
+  if (random16() < CHAKRA3_FLICKER_THRESHOLD) {
+    flicker[random8(pendant.ledCount)] = random8(3);
   }
-
+  
+  chakra3_phase += CHAKRA3_SPEED;
   for (uint8_t i = 0; i < pendant.ledCount; i++) {
-    pendant.leds[i].fadeLightBy(i == 0 ? CHAKRA3_FADE/4 : CHAKRA3_FADE);
+    uint8_t progress = chakra3_phase >> 8;
+    uint8_t brightness = 0;
+    uint8_t hue = HUE_YELLOW;
+    uint8_t sat = 255;
+
+    // Center beats first.
+    if (i == 0) progress += 20;
+    if (i == 0) hue -= 15;
+
+    if (progress < CHAKRA3_MID_BEAT) {
+      progress = map(progress, 0, CHAKRA3_MID_BEAT, 0, 127);
+    } else if (progress < CHAKRA3_END_BEAT) {
+      progress = map(progress, CHAKRA3_MID_BEAT, CHAKRA3_END_BEAT, 128, 255);
+    } else {
+      progress = 255;
+    }
+
+    brightness = quadwave8(progress);
+    brightness = CHAKRA3_DARKEST + scale8(brightness, 255-CHAKRA3_DARKEST);
+
+    if (flicker[i] == 0) {
+      brightness -= 30;
+    } else if (flicker[i] == 2) {
+      hue -= 15;
+      sat -= 30;
+    }
+    
+    pendant.leds[i] = CHSV(hue, sat, brightness);
     FastLED.show();
   }
-  FastLED.delay(30);
 }
 
 #define CHAKRA4_SPEED 300

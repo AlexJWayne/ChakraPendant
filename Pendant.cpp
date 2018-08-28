@@ -15,7 +15,8 @@ Pendant::Pendant(uint8_t _modes) {
   FastLED.addLeds<
     APA102,
     PENDANT_LED_DATA_PIN,
-    PENDANT_LED_CLOCK_PIN
+    PENDANT_LED_CLOCK_PIN,
+    BGR
   >(leds, PENDANT_NUM_LEDS);
 
   // Enable an internal pullup resistor on the button pin.
